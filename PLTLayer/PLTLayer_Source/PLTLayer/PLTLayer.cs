@@ -169,6 +169,10 @@ namespace Plantronics.EZ.API
      
         private PLTLayer() // can't call constructor due to singleton
         {
+            // Miralix - KA - Added dynamic loading CSV file from Embedded Resource, no need for at external file.
+            Assembly assembly = Assembly.GetAssembly(typeof(PLTLayer));
+            System.IO.Stream deviceCapabilitiesStream = assembly.GetManifestResourceStream("Plantronics.EZ.API.DeviceCapabilities.csv");
+            Spokes.DeviceCapabilitiesStream = deviceCapabilitiesStream == null ? null : new System.IO.StreamReader(deviceCapabilitiesStream);
         }
 
         ~PLTLayer()

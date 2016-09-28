@@ -4,9 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
 using System.Threading;
+using System.Threading.Tasks;
 using Interop.Plantronics;
 
 /*******
@@ -739,6 +738,11 @@ namespace Plantronics.UC.SpokesWrapper
     /// </summary>
     public sealed class Spokes
     {
+        /// <summary>
+        /// Support custom StreamReader of DeviceCapabilities.csv informations, and the ability to skip using file on the OS System.
+        /// </summary>
+        public static System.IO.StreamReader DeviceCapabilitiesStream;
+
         private static volatile Spokes instance;
         private static object syncRoot = new Object();
 
@@ -804,12 +808,11 @@ namespace Plantronics.UC.SpokesWrapper
 	        SpokesDeviceCaps devicecaps;
             m_AllDeviceCapabilities = new List<SpokesDeviceCaps>();
 
-	        try 
+	        try
 	        {
-                System.IO.StreamReader in_stream = 
-                   new System.IO.StreamReader("DeviceCapabilities.csv");
+                System.IO.StreamReader in_stream = DeviceCapabilitiesStream ?? new System.IO.StreamReader("DeviceCapabilities.csv");
 
-		        while((line = in_stream.ReadLine()) != null)
+                while ((line = in_stream.ReadLine()) != null)
                 {
 				        if (line.Length>0)
 				        {
@@ -3038,7 +3041,7 @@ namespace Plantronics.UC.SpokesWrapper
             DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: About to register for proximity.");
             try
             {
-                if (m_hostCommandExt != null)
+                if (m_hostCommandExt != null && DeviceCapabilities.HasProximity)
                 {
                     m_hostCommandExt.EnableProximity(register); // enable proximity reporting for device
                     if (register) m_hostCommandExt.RequestProximity();    // request to receive asyncrounous near/far proximity event to HeadsetStateChanged event handler. (note: will return it once. To get continuous updates of proximity you would need a to call GetProximity() repeatedly, e.g. in a worker thread).

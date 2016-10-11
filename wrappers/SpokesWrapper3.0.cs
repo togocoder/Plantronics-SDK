@@ -422,7 +422,7 @@ namespace Plantronics.UC.SpokesWrapper
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Event args for Line Active Changed event handler
     /// </summary>
     public class LineActiveChangedArgs : EventArgs
@@ -768,7 +768,7 @@ namespace Plantronics.UC.SpokesWrapper
 
         private SpokesDeviceCaps GetMyDeviceCapabilities()
         {
-	        SpokesDeviceCaps retval = new SpokesDeviceCaps();
+            SpokesDeviceCaps retval = new SpokesDeviceCaps();
             retval.HasProximity = false;
             retval.HasMobCallerId = false;
             retval.HasMobCallState = false;
@@ -779,16 +779,16 @@ namespace Plantronics.UC.SpokesWrapper
             retval.ProductId = "";
             retval.HasQDConnector = false;
             string prodidstr, prodidstr2;
-            
-            if (m_activeDevice!=null && m_AllDeviceCapabilities.Count()>0)
+
+            if (m_activeDevice != null && m_AllDeviceCapabilities.Count() > 0)
             {
                 prodidstr = string.Format("{0:X}", m_activeDevice.ProductId).ToUpper();
                 prodidstr2 = string.Format("{0:X4}", m_activeDevice.ProductId).ToUpper();
 
                 foreach (SpokesDeviceCaps caps in m_AllDeviceCapabilities)
                 {
-                    if (caps.ProductId.CompareTo(prodidstr)==0
-                        || caps.ProductId.CompareTo(prodidstr2)==0)
+                    if (caps.ProductId.CompareTo(prodidstr) == 0
+                        || caps.ProductId.CompareTo(prodidstr2) == 0)
                     {
                         // we got a match of our product!
                         DebugPrint(MethodInfo.GetCurrentMethod().Name, "INFO: Got a match of our Plantronics device in DeviceCapabilities.csv:");
@@ -798,89 +798,90 @@ namespace Plantronics.UC.SpokesWrapper
                     }
                 }
             }
-	        return retval;
+            return retval;
         }
 
         private void PreLoadAllDeviceCapabilities()
         {
-	        string line;
+            string line;
 
-	        SpokesDeviceCaps devicecaps;
+            SpokesDeviceCaps devicecaps;
             m_AllDeviceCapabilities = new List<SpokesDeviceCaps>();
 
-	        try
-	        {
+            try
+            {
                 System.IO.StreamReader in_stream = DeviceCapabilitiesStream ?? new System.IO.StreamReader("DeviceCapabilities.csv");
 
                 while ((line = in_stream.ReadLine()) != null)
                 {
-				        if (line.Length>0)
-				        {
-					        if (line.Substring(0,1).CompareTo("#")!=0 && line.Substring(0,1).CompareTo(",")!=0)
-					        {
-						        // not a comment line or empty line (with only commas)
+                    if (line.Length > 0)
+                    {
+                        if (line.Substring(0, 1).CompareTo("#") != 0 && line.Substring(0, 1).CompareTo(",") != 0)
+                        {
+                            // not a comment line or empty line (with only commas)
 
-                                devicecaps = new SpokesDeviceCaps();
-                                string[] words = line.Split(',');
+                            devicecaps = new SpokesDeviceCaps();
+                            string[] words = line.Split(',');
 
-						        int i = 0;
-                                string token = "";
+                            int i = 0;
+                            string token = "";
 
-                                foreach (string word in words)
-	                            {
-                                    token = word.ToUpper();
-                                    switch(i)
-							        {
-							        case 0:
-								        devicecaps.ProductId = word;
-								        break;
-							        case 1:
-								        // no action - this is the device name we don't need
-								        break;
-							        case 2:
-								        devicecaps.HasProximity = token.CompareTo("YES")==0 ? true : false;
-								        break;
-							        case 3:
+                            foreach (string word in words)
+                            {
+                                token = word.ToUpper();
+                                switch (i)
+                                {
+                                    case 0:
+                                        devicecaps.ProductId = word;
+                                        break;
+                                    case 1:
+                                        // no action - this is the device name we don't need
+                                        break;
+                                    case 2:
+                                        devicecaps.HasProximity = token.CompareTo("YES") == 0 ? true : false;
+                                        break;
+                                    case 3:
                                         devicecaps.HasMobCallerId = token.CompareTo("YES") == 0 ? true : false;
-								        break;
-							        case 4:
+                                        break;
+                                    case 4:
                                         devicecaps.HasMobCallState = token.CompareTo("YES") == 0 ? true : false;
-								        break;
-							        case 5:
+                                        break;
+                                    case 5:
                                         devicecaps.HasDocking = token.CompareTo("YES") == 0 ? true : false;
-								        break;
-							        case 6:
+                                        break;
+                                    case 6:
                                         devicecaps.HasWearingSensor = token.CompareTo("YES") == 0 ? true : false;
-								        break;
-							        case 7:
+                                        break;
+                                    case 7:
                                         devicecaps.HasMultiline = token.CompareTo("YES") == 0 ? true : false;
-								        break;
-							        case 8:
+                                        break;
+                                    case 8:
                                         devicecaps.IsWireless = token.CompareTo("YES") == 0 ? true : false;
                                         break;
                                     case 9:
                                         devicecaps.HasQDConnector = token.CompareTo("YES") == 0 ? true : false;
 
-								        // now, add the devicecaps to our list:
-								        m_AllDeviceCapabilities.Add(devicecaps);
+                                        // now, add the devicecaps to our list:
+                                        m_AllDeviceCapabilities.Add(devicecaps);
 
-								        break;
-							        }
-
-                                    i++;
+                                        break;
                                 }
 
-						        //DebugPrint(__FUNCTION__, "got some tokens");
-					        }
-				        }
-				        //devicecaps
-		        }
-		        in_stream.Close();
-	        }
-	        catch(Exception e) {
-		        //std::cerr << "Exception opening/reading/closing file\n";
-		        DebugPrint(MethodInfo.GetCurrentMethod().Name, "Exception reading DeviceCapabilities.csv. Does this file exist in current working directory?");
-	        }
+                                i++;
+                            }
+
+                            //DebugPrint(__FUNCTION__, "got some tokens");
+                        }
+                    }
+                    //devicecaps
+                }
+                in_stream.Close();
+            }
+            catch (Exception e)
+            {
+                //std::cerr << "Exception opening/reading/closing file\n";
+                DebugPrint(MethodInfo.GetCurrentMethod().Name, "Exception reading DeviceCapabilities.csv. Does this file exist in current working directory?");
+            }
         }
 
         /// <summary>
@@ -897,14 +898,14 @@ namespace Plantronics.UC.SpokesWrapper
         /// </summary>
         public static Spokes Instance
         {
-            get 
+            get
             {
-                if (instance == null) 
+                if (instance == null)
                 {
-                    lock (syncRoot) 
+                    lock (syncRoot)
                     {
                         // Instantiate a singleton Spokes object
-                        if (instance == null) 
+                        if (instance == null)
                             instance = new Spokes();
                     }
                 }
@@ -1011,7 +1012,7 @@ namespace Plantronics.UC.SpokesWrapper
         public delegate void MuteChangedEventHandler(object sender, MuteChangedArgs e);
         // Line active awareness:
         public delegate void LineActiveChangedEventHandler(object sender, LineActiveChangedArgs e);
-        
+
         // Device attach/detach:
         public delegate void AttachedEventHandler(object sender, AttachedArgs e);
         public delegate void DetachedEventHandler(object sender, EventArgs e);
@@ -1029,7 +1030,7 @@ namespace Plantronics.UC.SpokesWrapper
 
         // Call Requested event:
         public delegate void CallRequestedEventHandler(object sender, CallRequestedArgs e);
-                 
+
         // Battery Level Changed event:
         public delegate void BatteryLevelChangedEventHandler(object sender, EventArgs e);
 
@@ -1426,7 +1427,7 @@ namespace Plantronics.UC.SpokesWrapper
             if (BaseButtonPress != null)
                 BaseButtonPress(this, e);
         }
-        
+
         // Triggered when a user call requested event is received from dialpad device: ************************************************************
         private void OnCallRequested(CallRequestedArgs e)
         {
@@ -1680,7 +1681,7 @@ namespace Plantronics.UC.SpokesWrapper
         // print session manager events
         void m_sessionComManager_CallStateChanged(COMCallEventArgs e)
         {
-            DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: call state event = " + e.ToString());
+            DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: call state event = " + e.CallState);
 
             if (e.CallSource != m_sessionName)
             {
@@ -1691,25 +1692,25 @@ namespace Plantronics.UC.SpokesWrapper
                         m_voipIncoming = true;
                         // Getting here indicates user is ON A CALL!
                         DebugPrint(MethodInfo.GetCurrentMethod().Name,
-                            "Spokes: Calling activity detected!" + e.ToString());
+                            "Spokes: Calling activity detected! " + e.CallState);
                         OnOnCall(new OnCallArgs(e.CallSource, m_voipIncoming, OnCallCallState.Ringing, e.call.Id));
                         break;
                     case CallState.CallState_MobileCallRinging:
                         m_mobIncoming = true;
                         // user incoming mobile call
                         DebugPrint(MethodInfo.GetCurrentMethod().Name,
-                            "Spokes: Mobile Calling activity detected!" + e.ToString());
+                            "Spokes: Mobile Calling activity detected! " + e.CallState);
                         OnOnMobileCall(new OnMobileCallArgs(m_mobIncoming, MobileCallState.Ringing));
                         break;
                     case CallState.CallState_MobileCallInProgress:
                         DebugPrint(MethodInfo.GetCurrentMethod().Name,
-                            "Spokes: Mobile Calling activity detected!" + e.ToString());
+                            "Spokes: Mobile Calling activity detected! " + e.CallState);
                         OnOnMobileCall(new OnMobileCallArgs(m_mobIncoming, MobileCallState.OnCall));
                         break;
                     case CallState.CallState_AcceptCall:
                     case CallState.CallState_CallInProgress:
                         DebugPrint(MethodInfo.GetCurrentMethod().Name,
-                            "Spokes: Call was ansswered/in progress!" + e.ToString());
+                            "Spokes: Call was ansswered/in progress! " + e.CallState);
                         OnOnCall(new OnCallArgs(e.CallSource, m_voipIncoming, OnCallCallState.OnCall, e.call.Id));
                         OnCallAnswered(new CallAnsweredArgs(e.call.Id, e.CallSource));
                         break;
@@ -1719,14 +1720,14 @@ namespace Plantronics.UC.SpokesWrapper
                     case CallState.CallState_TransferToSpeaker:
                         // Getting here indicates user is ON A CALL!
                         DebugPrint(MethodInfo.GetCurrentMethod().Name,
-                            "Spokes: Calling activity detected!" + e.ToString());
+                            "Spokes: Calling activity detected! " + e.CallState);
                         OnOnCall(new OnCallArgs(e.CallSource, m_voipIncoming, OnCallCallState.OnCall, e.call.Id));
                         break;
                     case CallState.CallState_MobileCallEnded:
                         m_mobIncoming = false;
                         // Getting here indicates user HAS FINISHED A CALL!
                         DebugPrint(MethodInfo.GetCurrentMethod().Name,
-                            "Spokes: Mobile Calling activity ended." + e.ToString());
+                            "Spokes: Mobile Calling activity ended. " + e.CallState);
                         OnNotOnMobileCall(EventArgs.Empty);
                         break;
                     case CallState.CallState_CallEnded:
@@ -1735,7 +1736,7 @@ namespace Plantronics.UC.SpokesWrapper
                     case CallState.CallState_TerminateCall:
                         m_voipIncoming = false;
                         // Getting here indicates user HAS FINISHED A CALL!
-                        DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Calling activity ended." + e.ToString());
+                        DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Calling activity ended. " + e.CallState);
                         OnNotOnCall(new NotOnCallArgs(e.call.Id, e.CallSource));
                         OnCallEnded(new CallEndedArgs(e.call.Id, e.CallSource));
                         break;
@@ -1773,29 +1774,29 @@ namespace Plantronics.UC.SpokesWrapper
         // print session events
         void m_sessionEvents_CallStateChanged(COMCallEventArgs e)
         {
-            DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: ICallEvents call state event = " + e.ToString());
+            DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: ICallEvents call state event = " + e.CallState);
 
             switch (e.CallState)
             {
                 case CallState.CallState_CallRinging:
                     m_voipIncoming = true;
                     // Getting here indicates user is ON A CALL!
-                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Calling activity detected!" + e.ToString());
+                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Calling activity detected! " + e.CallState);
                     OnOnCall(new OnCallArgs(e.CallSource, m_voipIncoming, OnCallCallState.Ringing, e.call.Id));
                     break;
                 case CallState.CallState_MobileCallRinging:
                     m_mobIncoming = true;
                     // user incoming mobile call
-                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Mobile Calling activity detected!" + e.ToString());
+                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Mobile Calling activity detected! " + e.CallState);
                     OnOnMobileCall(new OnMobileCallArgs(m_mobIncoming, MobileCallState.Ringing));
                     break;
                 case CallState.CallState_MobileCallInProgress:
-                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Mobile Calling activity detected!" + e.ToString());
+                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Mobile Calling activity detected! " + e.CallState);
                     OnOnMobileCall(new OnMobileCallArgs(m_mobIncoming, MobileCallState.OnCall));
                     break;
                 case CallState.CallState_AcceptCall:
                 case CallState.CallState_CallInProgress:
-                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Call was ansswered/in progress!" + e.ToString());
+                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Call was ansswered/in progress! " + e.CallState);
                     OnOnCall(new OnCallArgs(e.CallSource, m_voipIncoming, OnCallCallState.OnCall, e.call.Id));
                     OnCallAnswered(new CallAnsweredArgs(e.call.Id, e.CallSource));
                     break;
@@ -1804,13 +1805,13 @@ namespace Plantronics.UC.SpokesWrapper
                 case CallState.CallState_TransferToHeadSet:
                 case CallState.CallState_TransferToSpeaker:
                     // Getting here indicates user is ON A CALL!
-                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Calling activity detected!" + e.ToString());
+                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Calling activity detected! " + e.CallState);
                     OnOnCall(new OnCallArgs(e.CallSource, m_voipIncoming, OnCallCallState.OnCall, e.call.Id));
                     break;
                 case CallState.CallState_MobileCallEnded:
                     m_mobIncoming = false;
                     // Getting here indicates user HAS FINISHED A CALL!
-                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Mobile Calling activity ended." + e.ToString());
+                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Mobile Calling activity ended. " + e.CallState);
                     OnNotOnMobileCall(EventArgs.Empty);
                     break;
                 case CallState.CallState_CallEnded:
@@ -1819,7 +1820,7 @@ namespace Plantronics.UC.SpokesWrapper
                 case CallState.CallState_TerminateCall:
                     m_voipIncoming = false;
                     // Getting here indicates user HAS FINISHED A CALL!
-                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Calling activity ended." + e.ToString());
+                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Calling activity ended. " + e.CallState);
                     OnNotOnCall(new NotOnCallArgs(e.call.Id, e.CallSource));
                     OnCallEnded(new CallEndedArgs(e.call.Id, e.CallSource));
                     break;
@@ -1855,12 +1856,13 @@ namespace Plantronics.UC.SpokesWrapper
                         DeviceListener_BaseStateChanged(e);
                         break;
                     case COMDeviceEventType.DeviceEventType_HeadsetButtonPressed:
-                        DebugPrint(MethodInfo.GetCurrentMethod().Name, "DeviceEventType_HeadsetButtonPressed " + e.HeadsetButton.ToString());
-                        OnButtonPress(new ButtonPressArgs(e.HeadsetButton, m_activeDevice.HostCommand.AudioState,
-                            m_activeDevice.HostCommand.mute));
-                        break;
-                    case COMDeviceEventType.DeviceEventType_HeadsetStateChanged:
-                    default:
+
+                        if (e.HeadsetButton != DeviceHeadsetButton.HeadsetButton_Unknown)
+                        {
+                            DebugPrint(MethodInfo.GetCurrentMethod().Name, "DeviceEventType_HeadsetButtonPressed " + e.HeadsetButton.ToString());
+                            OnButtonPress(new ButtonPressArgs(e.HeadsetButton, m_activeDevice.HostCommand.AudioState,
+                                m_activeDevice.HostCommand.mute));
+                        }
                         break;
                 }
             }
@@ -2176,11 +2178,11 @@ namespace Plantronics.UC.SpokesWrapper
                 case DeviceHeadsetButton.HeadsetButton_Flash:
                     OnCallSwitched(EventArgs.Empty);
                     break;
-                //case DeviceHeadsetButton.HeadsetButton_Mute:  // Not needed, now relying on IDeviceListener event for mute change
-                //    OnMuteChanged(new MuteChangedArgs(e.mute));
-                //    break;
+                    //case DeviceHeadsetButton.HeadsetButton_Mute:  // Not needed, now relying on IDeviceListener event for mute change
+                    //    OnMuteChanged(new MuteChangedArgs(e.mute));
+                    //    break;
             }
-    
+
             OnButtonPress(new ButtonPressArgs(e.ButtonPressed, e.AudioState, e.mute));
         }
         #endregion
@@ -2194,7 +2196,7 @@ namespace Plantronics.UC.SpokesWrapper
             }
             catch (Exception e)
             {
-                DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Exception caught attaching to device: "+e.ToString());
+                DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Exception caught attaching to device: " + e.ToString());
                 m_activeDevice = null;
             }
             if (m_activeDevice != null)
@@ -2335,7 +2337,7 @@ namespace Plantronics.UC.SpokesWrapper
             }
             catch (Exception e)
             {
-                DebugPrint(MethodInfo.GetCurrentMethod().Name, "INFO: Exception caught setting session as default softphone: "+e.ToString());
+                DebugPrint(MethodInfo.GetCurrentMethod().Name, "INFO: Exception caught setting session as default softphone: " + e.ToString());
             }
         }
 
@@ -2543,23 +2545,23 @@ namespace Plantronics.UC.SpokesWrapper
                     //    OnNear(EventArgs.Empty);
                     //}
                     break;
-                //case "0800":
-                // NOTE: this hack didn't work. I am now looking to turn of proximity
-                // voice prompts in the Hub code itself.
-                // you cannot send raw bladerunner to e.g. Focus UC via COM API
-                // you just get an exception
-                //    // proximity was enabled?
-                //    string enabled = args.m_datareporthex.Substring(24, 2);
-                //    if (enabled == "01")
-                //    {
-                //        // proximity was enabled, now turn off voice reporting!
-                //        string bladerunnercommand2 = args.m_datareporthex.Substring(0, 30)
-                //                                    + "000000" + args.m_datareporthex.Substring(36);
-                //        SendCustomMessageToHeadset(bladerunnercommand2);
-                //    }
-                //    break;
+                    //case "0800":
+                    // NOTE: this hack didn't work. I am now looking to turn of proximity
+                    // voice prompts in the Hub code itself.
+                    // you cannot send raw bladerunner to e.g. Focus UC via COM API
+                    // you just get an exception
+                    //    // proximity was enabled?
+                    //    string enabled = args.m_datareporthex.Substring(24, 2);
+                    //    if (enabled == "01")
+                    //    {
+                    //        // proximity was enabled, now turn off voice reporting!
+                    //        string bladerunnercommand2 = args.m_datareporthex.Substring(0, 30)
+                    //                                    + "000000" + args.m_datareporthex.Substring(36);
+                    //        SendCustomMessageToHeadset(bladerunnercommand2);
+                    //    }
+                    //    break;
             }
-            
+
 
 #endif
         }
@@ -2706,11 +2708,11 @@ namespace Plantronics.UC.SpokesWrapper
                     OnSerialNumber(new SerialNumberArgs(serialStr, SerialNumberTypes.Headset));
                     break;
 #if doubloon || newDASeries
-                    // NEW CC events
-                    case DeviceHeadsetState.HeadsetState_QDConnected:
+                // NEW CC events
+                case DeviceHeadsetState.HeadsetState_QDConnected:
                     OnConnected(new ConnectedStateArgs(true, false));
                     break;
-                    case DeviceHeadsetState.HeadsetState_QDDisconnected:
+                case DeviceHeadsetState.HeadsetState_QDDisconnected:
                     OnDisconnected(new ConnectedStateArgs(true, false));
                     break;
 #endif
@@ -2760,9 +2762,9 @@ namespace Plantronics.UC.SpokesWrapper
                     DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: No device is attached, cannot get initial device state.");
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                DebugPrint(MethodInfo.GetCurrentMethod().Name, "INFO: exception was caught from Spokes SDK: "+e.GetType());
+                DebugPrint(MethodInfo.GetCurrentMethod().Name, "INFO: exception was caught from Spokes SDK: " + e.GetType());
             }
         }
 
@@ -2808,13 +2810,13 @@ namespace Plantronics.UC.SpokesWrapper
             {
                 DebugPrint(MethodInfo.GetCurrentMethod().Name,
                     "INFO: exception caught getting last QD connected state (does it have a QD?) " + e.ToString());
-                if ((m_devicename.ToUpper().Contains("DA80") 
+                if ((m_devicename.ToUpper().Contains("DA80")
                     ||
                     m_devicename.ToUpper().Contains("DA70")
                     ||
                     m_devicename.ToUpper().Contains("DA90")
                     )
-                    && connectedRetries<5)
+                    && connectedRetries < 5)
                 {
                     // todo - reschedule a check of connected state after time delay
                     connectedTimer = new Timer(ConnectedRetryCallback, null, 1000, 0);
@@ -2866,21 +2868,21 @@ namespace Plantronics.UC.SpokesWrapper
 
         private void DebugPrint(string methodname, string message)
         {
-            if (m_debuglog!=null)
+            if (m_debuglog != null)
                 m_debuglog.DebugPrint(methodname, message);
         }
 
         // hard coded other device caps, beside caller id
         private void UpdateOtherDeviceCapabilities()
         {
-	        // NEW if DeviceCapabilities.csv file exists in your app's current working directory with a list of device
-	        // features in the following format (one device per line):
-	        // ProductId,DeviceName,HasProximity,HasMobCallerId,HasMobCallState,HasDocking,HasWearingSensor,HasMultiline,IsWireless
-	        // Then use those capabilities for current active device
-	        //
+            // NEW if DeviceCapabilities.csv file exists in your app's current working directory with a list of device
+            // features in the following format (one device per line):
+            // ProductId,DeviceName,HasProximity,HasMobCallerId,HasMobCallState,HasDocking,HasWearingSensor,HasMultiline,IsWireless
+            // Then use those capabilities for current active device
+            //
 
-	        // Is the m_AllDeviceCapabilities vector populated? And is my device id in there?
-	        SpokesDeviceCaps myDeviceCapabilities = GetMyDeviceCapabilities();
+            // Is the m_AllDeviceCapabilities vector populated? And is my device id in there?
+            SpokesDeviceCaps myDeviceCapabilities = GetMyDeviceCapabilities();
 
             if (myDeviceCapabilities.ProductId.Length > 0)
             {
@@ -2894,7 +2896,7 @@ namespace Plantronics.UC.SpokesWrapper
                 DeviceCapabilities.IsWireless = myDeviceCapabilities.IsWireless;
                 DeviceCapabilities.HasQDConnector = myDeviceCapabilities.HasQDConnector;
             }
-            else if (m_activeDevice!=null && m_activeDevice.ProductId == 126)
+            else if (m_activeDevice != null && m_activeDevice.ProductId == 126)
             {
                 // special case - PLT Labs Concept 1 head tracking headset...
                 DeviceCapabilities.HasProximity = true;
@@ -3012,7 +3014,7 @@ namespace Plantronics.UC.SpokesWrapper
                 // LC Device was disconnected, clear down the GUI state...
                 m_mobIncoming = false; // clear mobile call direction flag
                 m_voipIncoming = false; // clear call direction flag
-                OnNotOnCall(new NotOnCallArgs(0,""));
+                OnNotOnCall(new NotOnCallArgs(0, ""));
                 OnNotOnMobileCall(EventArgs.Empty);
 
                 OnSerialNumber(new SerialNumberArgs("", SerialNumberTypes.Base));
@@ -3128,7 +3130,7 @@ namespace Plantronics.UC.SpokesWrapper
             bool state = false; // default - unknown state
 
             //Get the current hold state
-            if (m_hostCommandExt!=null)
+            if (m_hostCommandExt != null)
             {
                 state = m_hostCommandExt.GetLinkHoldState(lineType);
             }
@@ -3147,7 +3149,7 @@ namespace Plantronics.UC.SpokesWrapper
                 {
                     state = m_hostCommandExt.IsLineActive(lineType);
                 }
-                catch(COMException e)
+                catch (COMException e)
                 {
                     DebugPrint(MethodInfo.GetCurrentMethod().Name, "INFO: cannot get line active state. Note: expected on D100 which does not support mutliline.");
                 }
@@ -3176,7 +3178,7 @@ namespace Plantronics.UC.SpokesWrapper
                 if (m_activeDevice.ProductName.Contains("BT300"))
                 {
                     DeviceCapabilities.HasDocking = true; // updated, legend does have docking
-                      // TODO Raise TT for IsHeadsetDocked should be implemented for BT300!
+                                                          // TODO Raise TT for IsHeadsetDocked should be implemented for BT300!
                     m_ignorenextundockedevent = true;
                     //m_ignorenextbattlevevent = true;
                     m_lastdocked = DetectLegendDockedState(true);
@@ -3306,7 +3308,18 @@ namespace Plantronics.UC.SpokesWrapper
                             OnPutOn(new WearingStateArgs(true, true));
                             break;
                     }
-                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Last donned state was: "+laststate);
+                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "Spokes: Last donned state was: " + laststate);
+                }
+            }
+            catch (COMException comEx)
+            {
+                if (comEx.ToString().StartsWith("System.Runtime.InteropServices.COMException (0x80004021)"))
+                {
+
+                }
+                else
+                {
+                    DebugPrint(MethodInfo.GetCurrentMethod().Name, "COMException in GetInitialDonnedStatus(): " + comEx.ToString());
                 }
             }
             catch (Exception e)
